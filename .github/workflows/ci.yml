@@ -1,0 +1,53 @@
+name: testes
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  testes:
+    runs-on: ${{ matrix.so }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        so: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # O juiz e a busca por TODAS as maneiras de repartir os pontos, que sao os
+      # numeros de Stirling de segunda especie e explodem mais rapido que
+      # fatorial. Ele so roda em nuvem minuscula, e e exatamente por isso que ele
+      # e indispensavel: as heuristicas devolvem um agrupamento plausivel SEMPRE,
+      # e agrupamento plausivel de custo razoavel nao parece errado em nada.
+      #
+      # A enumeracao evita renomear grupos: ela fixa o primeiro ponto no grupo
+      # zero e so permite o rotulo g+1 depois de o rotulo g ja ter aparecido. Sem
+      # isso cada reparticao sairia k! vezes.
+      #
+      # E comparar dois agrupamentos NAO e comparar rotulos item a item: o mesmo
+      # agrupamento sai com nomes diferentes dependendo da ordem em que os grupos
+      # foram criados, e um teste que compara rotulos reclama de resultado certo.
+      - name: testes
+        run: dotnet test testes/Agrupamento.Testes/Agrupamento.Testes.csproj -c Release --nologo -v q
+
+      - name: de onde os centros comecam, contra o otimo exato
+        run: dotnet run --project ferramentas/Medidor/Medidor.csproj -c Release -- comeco
+
+      - name: dois aneis concentricos, e quem consegue separar
+        run: dotnet run --project ferramentas/Medidor/Medidor.csproj -c Release -- formato
+
+      - name: quando o k-medias acerta o criterio e erra a resposta
+        run: dotnet run --project ferramentas/Medidor/Medidor.csproj -c Release -- criterio
+
+      - name: o DBSCAN e seus dois parametros
+        run: dotnet run --project ferramentas/Medidor/Medidor.csproj -c Release -- parametros
+
+      - name: quantas maneiras de repartir existem
+        run: dotnet run --project ferramentas/Medidor/Medidor.csproj -c Release -- espaco
