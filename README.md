@@ -55,7 +55,7 @@ reinício**.
 **Os dois anéis com a mesma contagem de pontos não têm a mesma densidade.** Eu
 pus sessenta pontos em cada anel, o que parece justo: o de fora tem quatro vezes
 a circunferência do de dentro, então ficou quatro vezes mais ralo. Nenhum raio
-servia para os dois ao mesmo tempo — com raio pequeno o anel de fora virava onze
+servia para os dois ao mesmo tempo: com raio pequeno o anel de fora virava onze
 pedaços, e com raio grande os dois viravam um só.
 
 Com a contagem **proporcional ao raio**, o DBSCAN acerta com folga:
